@@ -299,3 +299,135 @@ background `var(--surface)`, border `1px solid var(--border)`,
 `var(--text-dim)`, Manrope 600, 12px, `letter-spacing: 0.03em`,
 `padding: 5px 11px`, `border-radius: 999px`, `transition: 0.18s`. Active:
 background `var(--accent)`, text `#0e1714`.
+
+---
+
+## File / folder picker
+
+A dashed-outline tile that stands in for a native file or folder input. The
+whole tile is the click target: wrap a visually hidden `<input type="file">`
+in a `<label>` styled as below (`input[type=file] { display: none }`).
+
+```
+display:       block
+border:        1.5px dashed var(--border)
+background:    var(--surface-2)
+border-radius: var(--radius-sm)
+padding:       18px
+text-align:    center
+cursor:        pointer
+transition:    0.16s
+```
+
+States:
+
+- **Hover / drag-over** (`.drag`) — `border-color: var(--accent)`.
+- **Loaded** (a file or folder has been chosen) — `border-style: solid`,
+  `border-color: var(--accent)`.
+
+Contents, stacked and centred:
+
+- **Glyph** — a Unicode emoji, 22px, `display: block`, `margin-bottom: 6px`
+  (e.g. 📁 for a folder, 🗂️ for a file, 🖼️ for an image).
+- **Title** — Manrope 600, 13.5px.
+- **Meta line** — JetBrains Mono, 11px, `var(--text-faint)`, `margin-top: 5px`;
+  holds the chosen name, a file count, or a placeholder.
+
+Two pickers side by side sit in a two-column grid (`gap: 12px`) that collapses
+to a single column at the 560px breakpoint.
+
+---
+
+## Review grid
+
+A compact table for reviewing a list of detected items before committing an
+action — each row carrying one or more thumbnails and an include toggle. The
+header row and the data rows share one grid template so columns line up.
+
+```
+.review-head, .review-row
+  display:               grid
+  grid-template-columns: 1fr 88px 88px 52px      /* name · A · B · include */
+  gap:                   10px
+  align-items:           center
+  padding:               9px 8px
+```
+
+- **Header** — Manrope 700, 10px, `letter-spacing: 0.12em`, uppercase,
+  `var(--text-faint)`, `border-bottom: 1px solid var(--border-soft)`.
+- **Data row** — `border-bottom: 1px solid var(--border-soft)`; enters with the
+  `rise` animation, staggered `index × 32ms`.
+- **Incomplete / advisory row** (`.missing`) — uses the Part 1 warm-amber
+  advisory triplet: background `#2a2118`, border `#5a4427`.
+- **Error row** (`.error`) — a translucent `--bad` tint,
+  `rgba(232, 115, 111, 0.08)`.
+- **Single-thumbnail variant** (`.back-row`) —
+  `grid-template-columns: 1fr 88px 52px`.
+
+Name cell: JetBrains Mono, 12px, truncated with `text-overflow: ellipsis`.
+Inline status icons use amber `#e7c690` (advisory) or `var(--bad)` (error).
+
+Thumbnails: 60×60, `border-radius: var(--radius-sm)`, `object-fit: cover`,
+background `var(--surface-2)`. A `.big` modifier is 80×80. An empty / placeholder
+cell centres a glyph in `var(--text-faint)` at 18px.
+
+A summary line above the grid (JetBrains Mono, 12px, `var(--text-dim)`) counts
+outcomes, emphasising figures with `--ok`, amber `#e7c690`, and `--bad`.
+
+Responsive (≤560px): columns tighten to `1fr 64px 64px 46px`
+(single-thumbnail variant `1fr 64px 46px`).
+
+---
+
+## Selectable list
+
+A vertical stack of selectable rows for choosing one item from several — for
+example, picking one set among those found in a folder. The list chrome and
+selection behaviour below are the reusable part; the *content* of each row is
+app-specific.
+
+```
+.set-list (container)
+  display:        flex
+  flex-direction: column
+  gap:            8px
+```
+
+Each row:
+
+```
+background:    var(--surface-2)
+border:        1.5px solid var(--border)
+border-radius: var(--radius-sm)
+padding:       14px
+transition:    border-color 0.16s, background 0.16s
+cursor:        pointer
+```
+
+- **Hover** — `border-color: var(--accent)`.
+- **Selected** — `border-color: var(--accent)`, `background: var(--accent-deep)`
+  (the same active treatment as selection chips).
+- Rows enter with the `rise` animation, staggered `index × 32ms`.
+
+Row content is laid out by the app. As a reference instantiation, each row is a
+flex pair (`gap: 16px`, `align-items: flex-start`): a text block on the left
+(title in Fraunces 600 18px; supporting metadata in Manrope / JetBrains Mono per
+the type scale) and a thumbnail on the right.
+
+---
+
+## Loading indicator
+
+A quiet, centred status line shown while an async operation runs (e.g. reading a
+folder). It reuses the section-title type treatment, centred with vertical
+padding.
+
+```
+font-family:    'Manrope', 700
+font-size:       11px
+letter-spacing:  0.14em
+text-transform:  uppercase
+color:           var(--text-faint)
+text-align:      center
+padding:         18px 0
+```
